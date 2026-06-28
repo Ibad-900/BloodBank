@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Phone Number — BloodBank Peshawar{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <a href="{{ url_for('settings') }}" class="text-white-50 text-decoration-none" style="font-size:.85rem;">
+      <i class="bi bi-arrow-left me-1"></i>Back to Settings
+    </a>
+    <h1 class="mt-2">{{ 'Add' if not profile.get('phone') else 'Change' }} Phone Number</h1>
+    <p>{{ 'Add your phone number so donors can contact you directly.' if not profile.get('phone') else 'Update your contact phone number.' }}</p>
+  </div>
+</section>
+<section class="py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-7 col-lg-5">
+        <div class="form-card">
+          {% if profile.get('phone') %}
+          <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:1.25rem;">
+            Current number: <strong>{{ profile.get('phone') }}</strong>
+          </p>
+          {% endif %}
+          <form method="POST">
+            <div class="mb-4">
+              <label class="form-label">
+                {{ 'New Phone Number' if profile.get('phone') else 'Phone Number' }}
+              </label>
+              <input type="text" name="phone" id="ph" class="form-control"
+                     placeholder="0312-3456789" maxlength="12" required>
+              <div class="form-text">Format: 03XX-XXXXXXX — dash added automatically as you type</div>
+            </div>
+            <button type="submit" class="btn btn-red w-100 py-2">
+              <i class="bi bi-check-lg me-2"></i>
+              {{ 'Add Phone Number' if not profile.get('phone') else 'Update Phone Number' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById('ph').addEventListener('input', function(){
+  var d = this.value.replace(/\D/g,'');
+  if(d.length > 11) d = d.slice(0,11);
+  this.value = d.length > 4 ? d.slice(0,4)+'-'+d.slice(4) : d;
+});
+</script>
+{% endblock %}

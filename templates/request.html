@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Request Blood — BloodBank Peshawar{% endblock %}
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h1>Request Blood</h1>
+    <p>Submit an urgent blood request — our team will contact you shortly</p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-9 col-lg-7">
+        <div class="form-card">
+
+          <form method="POST" id="reqForm" novalidate>
+            <div class="row g-3">
+
+              <!-- Requester Name -->
+              <div class="col-md-12">
+                <label class="form-label">Your Full Name <span class="text-danger">*</span></label>
+                <input type="text" name="requester_name" id="reqName" class="form-control"
+                       placeholder="e.g. Fatima Malik" required maxlength="100"
+                       pattern="[A-Za-z ]+" title="Letters and spaces only — no numbers">
+                <div class="invalid-feedback">Letters and spaces only — no numbers allowed.</div>
+              </div>
+
+              <!-- Blood Group Needed -->
+              <div class="col-md-6">
+                <label class="form-label">Blood Group Needed <span class="text-danger">*</span></label>
+                <select name="blood_group_needed" class="form-select" required>
+                  <option value="">— Select blood group —</option>
+                  {% for bg in blood_groups %}
+                  <option value="{{ bg }}">{{ bg }}</option>
+                  {% endfor %}
+                </select>
+                <div class="invalid-feedback">Please select a blood group.</div>
+              </div>
+
+              <!-- Urgency -->
+              <div class="col-md-6">
+                <label class="form-label">Urgency Level <span class="text-danger">*</span></label>
+                <div class="mt-1 d-flex gap-3 flex-wrap">
+                  {% for level, color in [('Critical','danger'),('High','warning'),('Normal','success')] %}
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="urgency"
+                           id="urg{{ level }}" value="{{ level }}"
+                           {% if level == 'Normal' %}checked{% endif %} required>
+                    <label class="form-check-label" for="urg{{ level }}">
+                      <span class="urgency urgency-{{ level }}">{{ level }}</span>
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Contact Number -->
+              <div class="col-md-12">
+                <label class="form-label">Your Contact Number <span class="text-danger">*</span></label>
+                <input type="text" name="contact_number" id="reqPhone" class="form-control"
+                       placeholder="0321-1234567" maxlength="12" required
+                       pattern="03[0-9]{2}-[0-9]{7}"
+                       title="Format: 03XX-XXXXXXX e.g. 0321-1234567">
+                <div class="form-text">
+                  Format: <strong>03XX-XXXXXXX</strong> — donors will contact you directly on this number.
+                  Dash is added automatically as you type.
+                </div>
+                <div class="invalid-feedback">Must be in format 03XX-XXXXXXX (e.g. 0321-1234567)</div>
+              </div>
+
+              <!-- Warning note -->
+              <div class="col-12">
+                <div class="p-3 rounded" style="background:#FFF8F8;border:1px solid #FEE2E2;font-size:.84rem;color:#7F1D1D;">
+                  <i class="bi bi-exclamation-triangle me-1"></i>
+                  <strong>Note:</strong> Submitting a duplicate request (same contact, blood group, and urgency)
+                  while one is still pending will be blocked by the system. Please wait for your current
+                  request to be processed.
+                </div>
+              </div>
+
+              <!-- Submit -->
+              <div class="col-12">
+                <button type="submit" class="btn btn-red px-5 py-2">
+                  <i class="bi bi-droplet-half me-2"></i>Submit Request
+                </button>
+              </div>
+
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script>
+// Block numbers in name field in real time
+document.getElementById('reqName').addEventListener('input',function(){
+  this.value = this.value.replace(/[^A-Za-z\s]/g,'');
+});
+// Auto-format phone as 03XX-XXXXXXX
+document.getElementById('reqPhone').addEventListener('input',function(){
+  var d = this.value.replace(/\D/g,'');
+  if(d.length > 11) d = d.slice(0,11);
+  this.value = d.length > 4 ? d.slice(0,4)+'-'+d.slice(4) : d;
+});
+// Bootstrap validation
+document.getElementById('reqForm').addEventListener('submit',function(e){
+  if(!this.checkValidity()){e.preventDefault();e.stopPropagation();}
+  this.classList.add('was-validated');
+});
+</script>
+{% endblock %}

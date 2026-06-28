@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}BloodBank Peshawar{% endblock %}
+{% block content %}
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <span class="hero-eyebrow">Peshawar Blood Donor Registry</span>
+        <h1 class="hero-title">EVERY DROP<br>SAVES A LIFE</h1>
+        <p class="hero-subtitle">
+          A centralized registry connecting blood donors with patients across
+          Peshawar and KPK. No more WhatsApp groups — find blood or register
+          as a donor instantly.
+        </p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{{ url_for('login') }}" class="btn btn-red btn-lg px-4">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Login
+          </a>
+          <a href="{{ url_for('signup') }}" class="btn btn-outline-white btn-lg px-4">
+            <i class="bi bi-person-plus me-2"></i>Create Account
+          </a>
+        </div>
+        <div class="mt-4">
+          <a href="{{ url_for('admin_login') }}" style="color:rgba(255,255,255,0.5);font-size:.85rem;">
+            <i class="bi bi-shield-lock me-1"></i>Hospital Staff / Admin Login →
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5 text-center d-none d-lg-block">
+        <span class="hero-pulse">🫀</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5" style="background:#fff;">
+  <div class="container">
+    <div class="row g-4 text-center">
+      <div class="col-md-4">
+        <div style="font-size:2.2rem;margin-bottom:.75rem;">🏥</div>
+        <h6 class="fw-bold">Peshawar-Specific</h6>
+        <p class="text-muted" style="font-size:.88rem;">Real area names, local hospitals, Pakistani phone formats — built for Peshawar's blood crisis.</p>
+      </div>
+      <div class="col-md-4">
+        <div style="font-size:2.2rem;margin-bottom:.75rem;">⚡</div>
+        <h6 class="fw-bold">Instant Search</h6>
+        <p class="text-muted" style="font-size:.88rem;">Search available donors by blood group and area in seconds. Direct contact, no delays.</p>
+      </div>
+      <div class="col-md-4">
+        <div style="font-size:2.2rem;margin-bottom:.75rem;">🔒</div>
+        <h6 class="fw-bold">Safe & Verified</h6>
+        <p class="text-muted" style="font-size:.88rem;">90-day donation gap enforced automatically. Managed by hospital blood bank administrators.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

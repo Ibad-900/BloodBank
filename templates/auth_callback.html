@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Logging you in…</title>
+  <style>
+    body{font-family:'DM Sans',Arial,sans-serif;background:#F8FAFC;
+         display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;}
+    .box{text-align:center;padding:2rem;max-width:380px;}
+    .spinner{width:48px;height:48px;border:4px solid rgba(192,57,43,0.2);
+             border-top:4px solid #C0392B;border-radius:50%;
+             animation:spin .8s linear infinite;margin:0 auto 1.25rem;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    h5{color:#1E293B;font-weight:700;margin-bottom:.4rem;font-size:1.1rem;}
+    p{color:#64748B;font-size:.9rem;margin-bottom:0;}
+    .btn-red{background:#C0392B;color:#fff;border:none;border-radius:8px;
+             padding:.65rem 2rem;font-weight:600;cursor:pointer;font-size:1rem;
+             margin-top:1rem;display:inline-block;text-decoration:none;}
+    .btn-red:hover{background:#7B1818;color:#fff;}
+    .form-control{width:100%;padding:.6rem .9rem;border:2px solid #E2E8F0;
+                  border-radius:8px;font-size:.95rem;margin-bottom:.75rem;box-sizing:border-box;}
+    .form-control:focus{border-color:#C0392B;outline:none;}
+    .form-text{font-size:.78rem;color:#64748B;margin-bottom:1rem;text-align:left;}
+  </style>
+</head>
+<body>
+<div class="box">
+  <div id="spinnerSection">
+    <div class="spinner"></div>
+    <h5 id="msg">Completing login…</h5>
+    <p id="sub">Please wait a moment.</p>
+  </div>
+  <div id="phoneSection" style="display:none;">
+    <div style="font-size:2.5rem;margin-bottom:1rem;">📱</div>
+    <h5>One last thing</h5>
+    <p style="margin-bottom:1.25rem;">
+      Add your phone number so donors can contact you.<br>
+      <small>You can also do this later in Settings.</small>
+    </p>
+    <input type="text" id="phoneInput" class="form-control"
+           placeholder="0312-3456789" maxlength="12">
+    <div class="form-text">Format: 03XX-XXXXXXX</div>
+    <button class="btn-red" onclick="submitPhone()">Save & Continue</button><br>
+    <a href="/home" style="font-size:.85rem;color:#64748B;margin-top:.75rem;display:inline-block;">
+      Skip for now →
+    </a>
+  </div>
+</div>
+<script>
+(function(){
+  var hash   = window.location.hash.substring(1);
+  var params = new URLSearchParams(hash);
+  var access = params.get('access_token');
+  var type   = params.get('type');
+
+  if(type === 'recovery'){
+    window.location.href = '/reset-password?access_token=' + encodeURIComponent(access||'');
+    return;
+  }
+
+  if(!access){
+    document.getElementById('msg').textContent = 'Login failed.';
+    document.getElementById('sub').textContent = 'No token. Redirecting…';
+    setTimeout(function(){ window.location.href='/login'; }, 2000);
+    return;
+  }
+
+  fetch('/auth/session', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({access_token: access})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if(d.ok){
+      if(d.needs_phone){
+        // Show phone input step
+        document.getElementById('spinnerSection').style.display = 'none';
+        document.getElementById('phoneSection').style.display = 'block';
+      } else {
+        document.getElementById('msg').textContent = 'Login successful!';
+        document.getElementById('sub').textContent = 'Redirecting…';
+        setTimeout(function(){ window.location.href='/home'; }, 700);
+      }
+    } else {
+      document.getElementById('msg').textContent = 'Login failed.';
+      document.getElementById('sub').textContent = 'Redirecting to login…';
+      setTimeout(function(){ window.location.href='/login'; }, 2000);
+    }
+  })
+  .catch(function(){
+    setTimeout(function(){ window.location.href='/login'; }, 2000);
+  });
+})();
+
+// Auto-format phone input
+document.getElementById('phoneInput').addEventListener('input', function(){
+  var d = this.value.replace(/\D/g,'');
+  if(d.length > 11) d = d.slice(0,11);
+  this.value = d.length > 4 ? d.slice(0,4)+'-'+d.slice(4) : d;
+});
+
+function submitPhone(){
+  var phone = document.getElementById('phoneInput').value.trim();
+  if(!/^03\d{2}-\d{7}$/.test(phone)){
+    alert('Please enter phone in 03XX-XXXXXXX format.');
+    return;
+  }
+  fetch('/api/set-phone', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({phone: phone})
+  })
+  .then(function(){ window.location.href='/home'; })
+  .catch(function(){ window.location.href='/home'; });
+}
+</script>
+</body>
+</html>

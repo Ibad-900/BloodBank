@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Change Email{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <a href="{{ url_for('settings') }}" class="text-white-50 text-decoration-none" style="font-size:.85rem;">
+      <i class="bi bi-arrow-left me-1"></i>Back to Settings
+    </a>
+    <h1 class="mt-2">Change Email Address</h1>
+  </div>
+</section>
+<section class="py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-7 col-lg-5">
+        <div class="form-card">
+          <div class="auth-info-box mb-4">
+            <i class="bi bi-info-circle me-1"></i>
+            Supabase will automatically send a confirmation link to <strong>both</strong>
+            your current and new email. You must click the link in the <strong>new email</strong>
+            to complete the change. No OTP needed — Supabase handles it.
+          </div>
+          <form method="POST">
+            <div class="mb-4">
+              <label class="form-label">New Email Address</label>
+              <input type="email" name="new_email" class="form-control"
+                     placeholder="newemail@example.com" required>
+            </div>
+            <button type="submit" class="btn btn-red w-100 py-2">
+              <i class="bi bi-envelope-arrow-up me-2"></i>Send Confirmation Emails
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

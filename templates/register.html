@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Register as Donor — BloodBank Peshawar{% endblock %}
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h1>Register as a Donor</h1>
+    <p>Join our registry and help save lives across Peshawar</p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-8">
+        <div class="form-card">
+
+          <form method="POST" id="regForm" novalidate>
+            <div class="row g-3">
+
+              <!-- Full Name -->
+              <div class="col-md-6">
+                <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                <input type="text" name="full_name" id="regName" class="form-control"
+                       placeholder="e.g. Ahmed Khan" required maxlength="100"
+                       pattern="[A-Za-z ]+" title="Letters and spaces only — no numbers">
+                <div class="invalid-feedback">Letters and spaces only — no numbers allowed.</div>
+              </div>
+
+              <!-- Blood Group -->
+              <div class="col-md-6">
+                <label class="form-label">Blood Group <span class="text-danger">*</span></label>
+                <select name="blood_group" class="form-select" required>
+                  <option value="">— Select blood group —</option>
+                  {% for bg in blood_groups %}
+                  <option value="{{ bg }}">{{ bg }}</option>
+                  {% endfor %}
+                </select>
+                <div class="invalid-feedback">Please select a blood group.</div>
+              </div>
+
+              <!-- Age -->
+              <div class="col-md-4">
+                <label class="form-label">Age <span class="text-danger">*</span></label>
+                <input type="number" name="age" class="form-control"
+                       placeholder="e.g. 25" min="18" max="65" required>
+                <div class="form-text">Must be between 18 and 65</div>
+                <div class="invalid-feedback">Age must be between 18 and 65.</div>
+              </div>
+
+              <!-- Gender -->
+              <div class="col-md-4">
+                <label class="form-label">Gender <span class="text-danger">*</span></label>
+                <select name="gender" class="form-select" required>
+                  <option value="">— Select —</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div class="invalid-feedback">Please select a gender.</div>
+              </div>
+
+              <!-- Area -->
+              <div class="col-md-4">
+                <label class="form-label">Area in Peshawar <span class="text-danger">*</span></label>
+                <select name="area_id" class="form-select" required>
+                  <option value="">— Select area —</option>
+                  {% for area in areas %}
+                  <option value="{{ area.area_id }}">{{ area.area_name }}</option>
+                  {% endfor %}
+                </select>
+                <div class="invalid-feedback">Please select your area.</div>
+              </div>
+
+              <!-- Phone -->
+              <div class="col-md-12">
+                <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                <input type="text" name="phone" id="regPhone" class="form-control"
+                       placeholder="0312-3456789" maxlength="12" required
+                       pattern="03[0-9]{2}-[0-9]{7}"
+                       title="Format: 03XX-XXXXXXX e.g. 0312-3456789">
+                <div class="form-text">
+                  Format: <strong>03XX-XXXXXXX</strong> — the dash is added automatically as you type.
+                  This number must be unique in our system.
+                </div>
+                <div class="invalid-feedback">Must be in format 03XX-XXXXXXX (e.g. 0312-3456789)</div>
+              </div>
+
+              <!-- Submit -->
+              <div class="col-12 mt-2">
+                <button type="submit" class="btn btn-red px-5 py-2">
+                  <i class="bi bi-person-check me-2"></i>Register as Donor
+                </button>
+              </div>
+
+            </div>
+          </form>
+
+        </div>
+
+        <!-- Info box -->
+        <div class="mt-4 p-3 rounded" style="background:#FFF8F8;border:1px solid #FEE2E2;font-size:.85rem;color:#7F1D1D;">
+          <i class="bi bi-info-circle me-1"></i>
+          <strong>90-day rule:</strong> After donating blood, donors are automatically marked unavailable
+          for 90 days to protect their health. This is enforced by the system.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script>
+// Block numbers in name field in real time
+document.getElementById('regName').addEventListener('input',function(){
+  this.value = this.value.replace(/[^A-Za-z\s]/g,'');
+});
+// Auto-format phone as 03XX-XXXXXXX
+document.getElementById('regPhone').addEventListener('input',function(){
+  var d = this.value.replace(/\D/g,'');
+  if(d.length > 11) d = d.slice(0,11);
+  this.value = d.length > 4 ? d.slice(0,4)+'-'+d.slice(4) : d;
+});
+// Bootstrap validation
+document.getElementById('regForm').addEventListener('submit',function(e){
+  if(!this.checkValidity()){e.preventDefault();e.stopPropagation();}
+  this.classList.add('was-validated');
+});
+</script>
+{% endblock %}

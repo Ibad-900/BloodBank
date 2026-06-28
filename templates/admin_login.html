@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Admin Login — BloodBank Peshawar{% endblock %}
+{% block content %}
+<section class="auth-wrapper">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-7 col-lg-5">
+        <div class="form-card">
+          <div class="auth-icon-wrap">
+            <i class="bi bi-shield-lock-fill" style="font-size:2rem;color:var(--blood-red);"></i>
+          </div>
+          <h2 class="auth-heading">Admin Portal</h2>
+          <p class="auth-sub">Blood bank staff access only</p>
+          <form method="POST" novalidate>
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input type="text" name="username" class="form-control"
+                     placeholder="your_username" required autocomplete="username">
+            </div>
+            <div class="mb-4">
+              <label class="form-label">Password</label>
+              <div class="input-group">
+                <input type="password" name="password" id="apw" class="form-control"
+                       placeholder="••••••••" required autocomplete="current-password">
+                <button type="button" class="btn btn-outline-secondary btn-eye"
+                        onclick="togglePw('apw',this)">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-red w-100 py-2">
+              <i class="bi bi-shield-check me-2"></i>Login as Admin
+            </button>
+          </form>
+          <p class="text-center mt-4 mb-0" style="font-size:.85rem;color:var(--text-muted);">
+            Not staff? <a href="{{ url_for('login') }}" style="color:var(--blood-red);">User Login →</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+function togglePw(id,btn){
+  var f=document.getElementById(id),show=f.type==='text';
+  f.type=show?'password':'text';
+  btn.querySelector('i').className=show?'bi bi-eye':'bi bi-eye-slash';
+}
+</script>
+{% endblock %}

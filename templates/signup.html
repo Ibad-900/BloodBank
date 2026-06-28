@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — BloodBank Peshawar{% endblock %}
+{% block content %}
+<section class="auth-wrapper">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-11 col-md-9 col-lg-7">
+        <div class="form-card">
+          <div class="auth-icon-wrap"><span style="font-size:2rem;">🩸</span></div>
+          <h2 class="auth-heading">Create Account</h2>
+          <p class="auth-sub">Join Peshawar's blood donor community</p>
+
+          <a href="{{ google_url }}" class="btn btn-google w-100 mb-3">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="G">
+            Sign up with Google
+          </a>
+          <div class="auth-divider"><span>or create account with email</span></div>
+
+          <form method="POST" id="signupForm" novalidate autocomplete="off">
+
+            <!-- Full Name -->
+            <div class="mb-3">
+              <label class="form-label">Full Name <span class="text-danger">*</span></label>
+              <input type="text" name="full_name" id="fname" class="form-control"
+                     placeholder="e.g. Ahmed Khan" required maxlength="100">
+              <div class="field-msg" id="fname-msg"></div>
+              <div class="form-text">Letters, dots and spaces only — no numbers</div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <!-- Username -->
+              <div class="col-md-6">
+                <label class="form-label">Username <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light">@</span>
+                  <input type="text" name="username" id="uname" class="form-control"
+                         placeholder="ahmed_k" required minlength="3" maxlength="30">
+                </div>
+                <div class="field-msg" id="uname-msg"></div>
+                <div class="form-text">Lowercase letters, underscore, digits at end only</div>
+              </div>
+              <!-- Email -->
+              <div class="col-md-6">
+                <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                <input type="email" name="email" id="femail" class="form-control"
+                       placeholder="you@example.com" required autocomplete="email">
+                <div class="field-msg" id="email-msg"></div>
+              </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+              <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+              <input type="text" name="phone" id="fphone" class="form-control"
+                     placeholder="0312-3456789" maxlength="12" required>
+              <div class="field-msg" id="phone-msg"></div>
+              <div class="form-text">Format: 03XX-XXXXXXX — dash added automatically</div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <!-- Password -->
+              <div class="col-md-6">
+                <label class="form-label">Password <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <input type="password" name="password" id="pw1" class="form-control"
+                         placeholder="Min 8 chars" required>
+                  <button type="button" class="btn btn-outline-secondary btn-eye"
+                          onclick="togglePw('pw1',this)"><i class="bi bi-eye"></i></button>
+                </div>
+                <div class="field-msg" id="pw1-msg"></div>
+                <div class="form-text">8+ chars, uppercase, lowercase, digit, symbol</div>
+              </div>
+              <!-- Confirm Password -->
+              <div class="col-md-6">
+                <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <input type="password" name="confirm_password" id="pw2" class="form-control"
+                         placeholder="Repeat password" required>
+                  <button type="button" class="btn btn-outline-secondary btn-eye"
+                          onclick="togglePw('pw2',this)"><i class="bi bi-eye"></i></button>
+                </div>
+                <div class="field-msg" id="pw2-msg"></div>
+              </div>
+            </div>
+
+            <div class="auth-info-box mb-4">
+              <i class="bi bi-envelope-check me-1"></i>
+              A confirmation link will be sent to your email. Verify it before logging in.
+            </div>
+
+            <!-- Submit — disabled until all valid -->
+            <button type="submit" id="submitBtn" class="btn btn-red w-100 py-2" disabled>
+              <i class="bi bi-person-check me-2"></i>Create Account
+            </button>
+          </form>
+
+          <p class="text-center mt-4 mb-0" style="font-size:0.88rem;color:var(--text-muted);">
+            Already have an account?
+            <a href="{{ url_for('login') }}" style="color:var(--blood-red);font-weight:600;">Log in</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.field-msg { font-size:0.78rem; margin-top:3px; min-height:18px; }
+.field-msg.ok  { color:#16A34A; }
+.field-msg.err { color:#C0392B; }
+.form-control.is-ok  { border-color:#16A34A !important; }
+.form-control.is-err { border-color:#C0392B !important; }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var _valid = {fname:false, uname:false, email:false, phone:false, pw1:false, pw2:false};
+var _unameTimer = null;
+
+function setField(id, ok, msg){
+    var inp = document.getElementById(id);
+    var msgEl = document.getElementById(id+'-msg');
+    inp.classList.toggle('is-ok', ok);
+    inp.classList.toggle('is-err', !ok);
+    if(msgEl){
+        msgEl.textContent = msg;
+        msgEl.className = 'field-msg ' + (ok ? 'ok' : 'err');
+    }
+    _valid[id] = ok;
+    checkSubmit();
+}
+
+function checkSubmit(){
+    var allOk = Object.values(_valid).every(function(v){ return v; });
+    document.getElementById('submitBtn').disabled = !allOk;
+}
+
+// Full Name
+document.getElementById('fname').addEventListener('input', function(){
+    this.value = this.value.replace(/[^A-Za-z.\s]/g, '');
+    var v = this.value.trim();
+    if(v.length < 2) setField('fname', false, 'Enter at least 2 characters.');
+    else if(!/^[A-Za-z.\s]+$/.test(v)) setField('fname', false, 'Letters, dots and spaces only.');
+    else setField('fname', true, '✓ Looks good');
+});
+
+// Username — AJAX uniqueness check
+document.getElementById('uname').addEventListener('input', function(){
+    this.value = this.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+    var v = this.value;
+    clearTimeout(_unameTimer);
+    if(v.length < 3){ setField('uname', false, 'At least 3 characters.'); return; }
+    if(!/^[a-z][a-z_]*[0-9]*$/.test(v)){
+        setField('uname', false, 'Start with a letter. Digits at end only.');
+        return;
+    }
+    setField('uname', false, 'Checking availability…');
+    _unameTimer = setTimeout(function(){
+        fetch('/api/check-username?username='+encodeURIComponent(v))
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+            if(d.available) setField('uname', true, '✓ Username available');
+            else setField('uname', false, '✗ Username already taken');
+        }).catch(function(){ setField('uname', true, '✓ Format OK'); });
+    }, 600);
+});
+
+// Email
+document.getElementById('femail').addEventListener('input', function(){
+    var v = this.value.trim();
+    var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    setField('femail', ok, ok ? '✓ Valid email' : 'Enter a valid email address.');
+});
+
+// Phone — auto-dash
+document.getElementById('fphone').addEventListener('input', function(){
+    var d = this.value.replace(/\D/g,'');
+    if(d.length > 11) d = d.slice(0,11);
+    this.value = d.length > 4 ? d.slice(0,4)+'-'+d.slice(4) : d;
+    var ok = /^03\d{2}-\d{7}$/.test(this.value);
+    setField('fphone', ok, ok ? '✓ Valid format' : 'Must be 03XX-XXXXXXX (e.g. 0312-3456789)');
+});
+
+// Password
+document.getElementById('pw1').addEventListener('input', function(){
+    var v = this.value;
+    var ok = v.length>=8 && /[A-Z]/.test(v) && /[a-z]/.test(v)
+             && /\d/.test(v) && /[!@#$%^&*(),.?:{}|<>]/.test(v);
+    var msg = ok ? '✓ Strong password' :
+        'Needs: ' +
+        (v.length<8 ? '8+ chars ' : '') +
+        (!/[A-Z]/.test(v) ? 'uppercase ' : '') +
+        (!/[a-z]/.test(v) ? 'lowercase ' : '') +
+        (!/\d/.test(v) ? 'digit ' : '') +
+        (!/[!@#$%^&*(),.?:{}|<>]/.test(v) ? 'symbol' : '');
+    setField('pw1', ok, msg);
+    // Re-check confirm
+    var pw2v = document.getElementById('pw2').value;
+    if(pw2v) setField('pw2', pw2v===v, pw2v===v ? '✓ Passwords match' : '✗ Passwords do not match');
+});
+
+// Confirm Password
+document.getElementById('pw2').addEventListener('input', function(){
+    var ok = this.value === document.getElementById('pw1').value && this.value.length > 0;
+    setField('pw2', ok, ok ? '✓ Passwords match' : '✗ Passwords do not match');
+});
+
+// Toggle password visibility
+function togglePw(id, btn){
+    var f=document.getElementById(id), show=f.type==='text';
+    f.type=show?'password':'text';
+    btn.querySelector('i').className=show?'bi bi-eye':'bi bi-eye-slash';
+}
+
+// Block form submit if JS validation fails (extra safety)
+document.getElementById('signupForm').addEventListener('submit', function(e){
+    var allOk = Object.values(_valid).every(function(v){ return v; });
+    if(!allOk){ e.preventDefault(); }
+});
+</script>
+{% endblock %}

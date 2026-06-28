@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Change Username{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <a href="{{ url_for('settings') }}" class="text-white-50 text-decoration-none" style="font-size:.85rem;">
+      <i class="bi bi-arrow-left me-1"></i>Back to Settings
+    </a>
+    <h1 class="mt-2">Change Username</h1>
+  </div>
+</section>
+<section class="py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-7 col-lg-5">
+        <div class="form-card">
+          <form method="POST" novalidate>
+            <div class="mb-2">
+              <label class="form-label">New Username</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">@</span>
+                <input type="text" name="username" id="uname" class="form-control"
+                       value="{{ profile.get('username','') }}"
+                       required minlength="3" maxlength="30">
+              </div>
+              <div id="uname-msg" class="form-text"></div>
+              <div class="form-text">Lowercase letters, underscore allowed, digits at end only</div>
+            </div>
+            <div class="mb-4"></div>
+            <button type="submit" id="saveBtn" class="btn btn-red w-100 py-2">
+              <i class="bi bi-check-lg me-2"></i>Save Username
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+var timer=null;
+document.getElementById('uname').addEventListener('input',function(){
+  this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
+  var v=this.value, msg=document.getElementById('uname-msg');
+  clearTimeout(timer);
+  if(v.length<3){msg.innerHTML='<span style="color:red">At least 3 characters</span>';return;}
+  if(!/^[a-z][a-z_]*[0-9]*$/.test(v)){
+    msg.innerHTML='<span style="color:red">Start with letter, digits at end only</span>';return;
+  }
+  msg.innerHTML='<span style="color:#64748B">Checking…</span>';
+  timer=setTimeout(function(){
+    fetch('/api/check-username?username='+encodeURIComponent(v))
+    .then(function(r){return r.json();})
+    .then(function(d){
+      msg.innerHTML=d.available
+        ?'<span style="color:green"><i class="bi bi-check-circle"></i> Available</span>'
+        :'<span style="color:red"><i class="bi bi-x-circle"></i> Already taken</span>';
+      document.getElementById('saveBtn').disabled=!d.available;
+    });
+  },600);
+});
+</script>
+{% endblock %}

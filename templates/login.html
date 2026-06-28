@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Login — BloodBank Peshawar{% endblock %}
+{% block content %}
+<section class="auth-wrapper">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-7 col-lg-5">
+        <div class="form-card">
+          <div class="auth-icon-wrap"><span style="font-size:2rem;">🩸</span></div>
+          <h2 class="auth-heading">Welcome Back</h2>
+          <p class="auth-sub">Log in with your email or username</p>
+
+          <!-- Google -->
+          <a href="{{ google_url }}" class="btn btn-google w-100 mb-3">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="G">
+            Continue with Google
+          </a>
+          <div class="auth-divider"><span>or log in with email / username</span></div>
+
+          <form method="POST" novalidate>
+            <div class="mb-3">
+              <label class="form-label">Email Address or Username</label>
+              <input type="text" name="identifier" class="form-control"
+                     placeholder="you@example.com  or  ahmed_k"
+                     required autocomplete="username">
+              <div class="form-text">You can use either your email or your username</div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Password</label>
+              <div class="input-group">
+                <input type="password" name="password" id="loginPw" class="form-control"
+                       placeholder="••••••••" required autocomplete="current-password">
+                <button type="button" class="btn btn-outline-secondary btn-eye"
+                        onclick="togglePw('loginPw',this)">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="text-end mb-4">
+              <a href="{{ url_for('forgot_password') }}"
+                 style="font-size:0.83rem;color:var(--text-muted);">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn btn-red w-100 py-2">
+              <i class="bi bi-box-arrow-in-right me-2"></i>Log In
+            </button>
+          </form>
+
+          <p class="text-center mt-4 mb-0" style="font-size:0.88rem;color:var(--text-muted);">
+            Don't have an account?
+            <a href="{{ url_for('signup') }}" style="color:var(--blood-red);font-weight:600;">Sign up free</a>
+          </p>
+        </div>
+        <p class="text-center mt-3" style="font-size:0.82rem;color:var(--text-muted);">
+          Hospital staff?
+          <a href="{{ url_for('admin_login') }}" style="color:var(--blood-red);">Admin Login →</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+function togglePw(id, btn){
+    var f=document.getElementById(id), show=f.type==='text';
+    f.type=show?'password':'text';
+    btn.querySelector('i').className=show?'bi bi-eye':'bi bi-eye-slash';
+}
+</script>
+{% endblock %}

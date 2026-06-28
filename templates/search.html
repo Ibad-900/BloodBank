@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}Find a Donor — BloodBank Peshawar{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-search me-2"></i>Find a Donor</h1>
+        <p>Search available blood donors by blood group and area in Peshawar</p>
+    </div>
+</section>
+
+<!-- Search Form + Results -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+
+            <!-- Search Form (left panel) -->
+            <div class="col-lg-4">
+                <div class="form-card">
+                    <h5 class="fw-bold mb-4" style="font-family:'Bebas Neue',cursive; letter-spacing:2px; font-size:1.3rem;">
+                        <i class="bi bi-funnel me-2" style="color:var(--blood-red);"></i>Search Filters
+                    </h5>
+
+                    <!-- Search uses GET so the URL reflects the search (bookmarkable) -->
+                    <form method="GET" action="{{ url_for('search') }}">
+
+                        <div class="mb-3">
+                            <label class="form-label">Blood Group</label>
+                            <select name="blood_group" class="form-select">
+                                <option value="">— Any Blood Group —</option>
+                                {% for bg in blood_groups %}
+                                    <option value="{{ bg }}"
+                                        {% if bg == selected_blood_group %}selected{% endif %}>
+                                        {{ bg }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Area in Peshawar</label>
+                            <select name="area_id" class="form-select">
+                                <option value="">— Any Area —</option>
+                                {% for area in areas %}
+                                    <option value="{{ area.area_id }}"
+                                        {% if area.area_id|string == selected_area_id %}selected{% endif %}>
+                                        {{ area.area_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-red btn-lg">
+                                <i class="bi bi-search me-2"></i>Search Donors
+                            </button>
+                        </div>
+
+                        {% if search_performed %}
+                        <div class="text-center mt-2">
+                            <a href="{{ url_for('search') }}" class="text-muted small">
+                                <i class="bi bi-x-circle me-1"></i>Clear filters
+                            </a>
+                        </div>
+                        {% endif %}
+                    </form>
+                </div>
+
+                <!-- Info box -->
+                <div class="mt-3 p-3 rounded-3" style="background:#FFF8F8; border:1.5px solid #FECACA;">
+                    <p class="mb-1 fw-semibold" style="font-size:0.85rem; color:var(--blood-red);">
+                        <i class="bi bi-info-circle me-1"></i>Note
+                    </p>
+                    <p class="mb-0 text-muted" style="font-size:0.82rem;">
+                        Only donors who have not donated blood in the last 90 days are shown as available. This follows WHO guidelines for whole blood donation.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Results Panel (right) -->
+            <div class="col-lg-8">
+                {% if not search_performed %}
+                    <!-- No search yet — welcome state -->
+                    <div class="empty-state" style="background:white; border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+                        <span class="empty-icon">🩸</span>
+                        <h5>Search for Available Donors</h5>
+                        <p class="text-muted">Select a blood group or area from the left panel and click Search.</p>
+                    </div>
+
+                {% elif donors %}
+                    <p class="result-count">
+                        Showing <strong>{{ donors|length }}</strong> available donor{% if donors|length != 1 %}s{% endif %}
+                        {% if selected_blood_group %} with blood group <strong>{{ selected_blood_group }}</strong>{% endif %}
+                        {% if selected_area_id %} in selected area{% endif %}
+                    </p>
+
+                    <div class="table-responsive">
+                        <table class="table data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Blood Group</th>
+                                    <th>Gender</th>
+                                    <th>Age</th>
+                                    <th>Area</th>
+                                    <th>Contact</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for donor in donors %}
+                                <tr>
+                                    <td>
+                                        <i class="bi bi-person-circle text-muted me-2"></i>
+                                        <strong>{{ donor.full_name }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="bg-badge">{{ donor.blood_group }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="gender-badge gender-{{ donor.gender }}">
+                                            {{ donor.gender }}
+                                        </span>
+                                    </td>
+                                    <td>{{ donor.age }} yrs</td>
+                                    <td>
+                                        <i class="bi bi-geo-alt text-muted me-1"></i>
+                                        {{ donor.area_name }}
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-telephone text-muted me-1"></i>
+                                        {{ donor.phone }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                {% else %}
+                    <!-- Search done but no results -->
+                    <div class="empty-state" style="background:white; border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+                        <span class="empty-icon">😔</span>
+                        <h5>No Available Donors Found</h5>
+                        <p class="text-muted">
+                            No donors match your criteria right now.<br>
+                            Try a different blood group or remove the area filter.
+                        </p>
+                        <a href="{{ url_for('blood_request') }}" class="btn btn-red mt-2">
+                            <i class="bi bi-plus-circle me-2"></i>Submit an Urgent Request
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div><!-- /row -->
+    </div>
+</section>
+
+{% endblock %}

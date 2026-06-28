@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — BloodBank Peshawar{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</h1>
+        <p>Live overview of all system data — donors, requests, and donations</p>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+
+        <!-- ===== TOP STAT CARDS ===== -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="admin-stat">
+                    <span class="admin-stat-num">{{ total_donors }}</span>
+                    <span class="admin-stat-label">Total Donors</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="admin-stat green">
+                    <span class="admin-stat-num">{{ available_donors }}</span>
+                    <span class="admin-stat-label">Available Now</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="admin-stat yellow">
+                    <span class="admin-stat-num">{{ pending_requests }}</span>
+                    <span class="admin-stat-label">Pending Requests</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="admin-stat blue">
+                    <span class="admin-stat-num">{{ total_donations }}</span>
+                    <span class="admin-stat-label">Total Donations</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== BLOOD GROUP BREAKDOWN ===== -->
+        <div class="section-card">
+            <h5 class="section-card-title">
+                <i class="bi bi-bar-chart-fill" style="color:var(--blood-red);"></i>
+                Blood Group Breakdown
+            </h5>
+            <div class="table-responsive">
+                <table class="table data-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Blood Group</th>
+                            <th>Total Donors</th>
+                            <th>Available</th>
+                            <th>Unavailable (donated recently)</th>
+                            <th style="width:220px;">Availability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in blood_group_breakdown %}
+                        {% set avail = row.available if row.available else 0 %}
+                        {% set pct = ((avail / row.total) * 100) | round(0) | int if row.total > 0 else 0 %}
+                        <tr>
+                            <td><span class="bg-badge">{{ row.blood_group }}</span></td>
+                            <td><strong>{{ row.total }}</strong></td>
+                            <td><span class="text-success fw-semibold">{{ avail }}</span></td>
+                            <td><span class="text-danger">{{ row.total - avail }}</span></td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="mini-bar-wrap flex-grow-1">
+                                        <div class="mini-bar" data-width="{{ pct }}"></div>
+                                    </div>
+                                    <span style="font-size:0.8rem; color:var(--text-muted); min-width:35px;">
+                                        {{ pct }}%
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== PENDING BLOOD REQUESTS ===== -->
+        <div class="section-card">
+            <h5 class="section-card-title">
+                <i class="bi bi-clock-history" style="color:var(--warning-col);"></i>
+                Pending Blood Requests
+                <span class="ms-2 badge rounded-pill" style="background:var(--warning-col); font-size:0.75rem;">
+                    {{ pending_blood_requests|length }}
+                </span>
+            </h5>
+
+            {% if pending_blood_requests %}
+            <div class="table-responsive">
+                <table class="table data-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Requester</th>
+                            <th>Blood Group</th>
+                            <th>Urgency</th>
+                            <th>Contact</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in pending_blood_requests %}
+                        <tr>
+                            <td class="text-muted small">{{ req.request_id }}</td>
+                            <td>
+                                <i class="bi bi-person-fill text-muted me-1"></i>
+                                {{ req.requester_name }}
+                            </td>
+                            <td><span class="bg-badge">{{ req.blood_group_needed }}</span></td>
+                            <td>
+                                <span class="urgency urgency-{{ req.urgency }}">
+                                    {% if req.urgency == 'Critical' %}
+                                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                    {% endif %}
+                                    {{ req.urgency }}
+                                </span>
+                            </td>
+                            <td>
+                                <i class="bi bi-telephone text-muted me-1"></i>
+                                {{ req.contact_number }}
+                            </td>
+                            <td class="text-muted small">{{ req.request_date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <span class="empty-icon">✅</span>
+                <h5>No Pending Requests</h5>
+                <p class="text-muted small">All blood requests have been fulfilled or cancelled.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ===== RECENT DONATIONS ===== -->
+        <div class="section-card">
+            <h5 class="section-card-title">
+                <i class="bi bi-calendar2-check" style="color:var(--success);"></i>
+                Recent Donations
+                <span class="ms-1 text-muted fw-normal" style="font-size:0.85rem;">(Last 10)</span>
+            </h5>
+
+            {% if recent_donations %}
+            <div class="table-responsive">
+                <table class="table data-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Donor Name</th>
+                            <th>Blood Group</th>
+                            <th>Hospital</th>
+                            <th>Units</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in recent_donations %}
+                        <tr>
+                            <td>
+                                <i class="bi bi-person-circle text-muted me-2"></i>
+                                {{ d.full_name }}
+                            </td>
+                            <td><span class="bg-badge">{{ d.blood_group }}</span></td>
+                            <td>
+                                <i class="bi bi-hospital text-muted me-1"></i>
+                                {{ d.hospital_name }}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ d.units_donated }} unit{% if d.units_donated > 1 %}s{% endif %}</span>
+                            </td>
+                            <td class="text-muted small">{{ d.donation_date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <span class="empty-icon">📋</span>
+                <p class="text-muted">No donation records found.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ===== UNAVAILABLE DONORS ===== -->
+        <div class="section-card">
+            <h5 class="section-card-title">
+                <i class="bi bi-person-slash" style="color:var(--text-muted);"></i>
+                Donors Currently Unavailable
+                <span class="ms-1 text-muted fw-normal" style="font-size:0.85rem;">(donated recently — 90-day wait)</span>
+            </h5>
+
+            {% if unavailable_donors %}
+            <div class="table-responsive">
+                <table class="table data-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Blood Group</th>
+                            <th>Area</th>
+                            <th>Phone</th>
+                            <th>Last Donated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in unavailable_donors %}
+                        <tr>
+                            <td>
+                                <i class="bi bi-person text-muted me-2"></i>
+                                {{ d.full_name }}
+                            </td>
+                            <td><span class="bg-badge">{{ d.blood_group }}</span></td>
+                            <td>{{ d.area_name }}</td>
+                            <td class="text-muted small">{{ d.phone }}</td>
+                            <td>
+                                <span class="urgency urgency-High">{{ d.last_donated }}</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <span class="empty-icon">🎉</span>
+                <p class="text-muted">All donors are currently marked as available.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Footer note -->
+        <div class="text-center text-muted small pb-2">
+            <i class="bi bi-database me-1"></i>
+            All data is fetched live from <strong>blood_donor_registry_peshawar</strong> MySQL database.
+            &nbsp;|&nbsp; Triggers enforce the 90-day donation gap automatically.
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+/* Apply mini-bar widths from data-width attributes.
+   This avoids Jinja2 {{ }} inside style= which causes
+   false VS Code CSS linter errors on this line. */
+document.querySelectorAll('.mini-bar[data-width]').forEach(function(el) {
+    el.style.width = el.getAttribute('data-width') + '%';
+});
+</script>
+{% endblock %}

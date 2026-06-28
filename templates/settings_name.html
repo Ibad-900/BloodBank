@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Change Name{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <a href="{{ url_for('settings') }}" class="text-white-50 text-decoration-none" style="font-size:.85rem;">
+      <i class="bi bi-arrow-left me-1"></i>Back to Settings
+    </a>
+    <h1 class="mt-2">Change Full Name</h1>
+  </div>
+</section>
+<section class="py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-7 col-lg-5">
+        <div class="form-card">
+          <form method="POST" novalidate>
+            <div class="mb-4">
+              <label class="form-label">Full Name</label>
+              <input type="text" name="full_name" id="fname" class="form-control"
+                     value="{{ profile.get('full_name','') }}"
+                     placeholder="e.g. Ahmed Khan" required maxlength="100">
+              <div class="form-text">Letters, dots and spaces only — no numbers</div>
+            </div>
+            <button type="submit" class="btn btn-red w-100 py-2">
+              <i class="bi bi-check-lg me-2"></i>Save Name
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById('fname').addEventListener('input',function(){
+  this.value=this.value.replace(/[^A-Za-z.\s]/g,'');
+});
+</script>
+{% endblock %}

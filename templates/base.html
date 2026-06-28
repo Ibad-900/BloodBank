@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Blood Donor Registry — Peshawar{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-blood sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2"
+           href="{{ url_for('home') if session.get('user_type') else url_for('landing') }}">
+            <span style="font-size:1.4rem;">🩸</span>
+            <span class="brand-text">BloodBank Peshawar</span>
+        </a>
+        <button class="navbar-toggler border-0" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <i class="bi bi-list" style="font-size:1.6rem;color:rgba(255,255,255,0.8);"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto gap-1">
+
+                {% if session.get('user_type') == 'user' %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint=='home' %}active{% endif %}"
+                       href="{{ url_for('home') }}">
+                        <i class="bi bi-house me-1"></i>Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint=='search' %}active{% endif %}"
+                       href="{{ url_for('search') }}">
+                        <i class="bi bi-search me-1"></i>Find Donor
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint=='register' %}active{% endif %}"
+                       href="{{ url_for('register') }}">
+                        <i class="bi bi-person-plus me-1"></i>Register
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint=='blood_request' %}active{% endif %}"
+                       href="{{ url_for('blood_request') }}">
+                        <i class="bi bi-droplet-half me-1"></i>Request Blood
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint in ['settings','settings_name','settings_username','settings_email','settings_phone','settings_password'] %}active{% endif %}"
+                       href="{{ url_for('settings') }}">
+                        <i class="bi bi-person-circle me-1"></i>
+                        {{ session.get('username', 'Account') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-admin" href="{{ url_for('logout') }}">
+                        <i class="bi bi-box-arrow-right me-1"></i>Logout
+                    </a>
+                </li>
+
+                {% elif session.get('user_type') == 'admin' %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint=='search' %}active{% endif %}"
+                       href="{{ url_for('search') }}">
+                        <i class="bi bi-search me-1"></i>Find Donor
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint=='admin' %}active{% endif %}"
+                       href="{{ url_for('admin') }}">
+                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-admin" href="{{ url_for('admin_logout') }}">
+                        <i class="bi bi-box-arrow-right me-1"></i>
+                        {{ session.get('full_name', 'Admin') }} — Logout
+                    </a>
+                </li>
+
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('login') }}">
+                        <i class="bi bi-person me-1"></i>Login
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('signup') }}">
+                        <i class="bi bi-person-plus me-1"></i>Sign Up
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-admin" href="{{ url_for('admin_login') }}">
+                        <i class="bi bi-shield-lock me-1"></i>Admin
+                    </a>
+                </li>
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }} alert-dismissible fade show" role="alert">
+            {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<main>{% block content %}{% endblock %}</main>
+
+<footer class="site-footer mt-5">
+    <div class="container text-center">
+        <p class="mb-1">
+            🩸 <strong>BloodBank Peshawar</strong> — Connecting donors with patients across Peshawar & KPK
+        </p>
+        <p class="mb-0" style="font-size:0.8rem;">
+            Ibad Ur Rahman &nbsp;|&nbsp; BS AI (B) &nbsp;|&nbsp; Emergency: <strong>1122</strong>
+        </p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- SSE: event-driven live stats -->
+<script>
+(function(){
+    if (!window.EventSource) return;
+    var src = new EventSource('/stream');
+    src.onmessage = function(e){
+        try {
+            var d = JSON.parse(e.data);
+            document.querySelectorAll('[data-stat]').forEach(function(el){
+                var k = el.getAttribute('data-stat');
+                if (d[k] !== undefined) el.textContent = Number(d[k]).toLocaleString();
+            });
+        } catch(err){}
+    };
+})();
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

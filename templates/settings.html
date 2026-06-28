@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Settings — BloodBank Peshawar{% endblock %}
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-gear-fill me-2"></i>Settings</h1>
+    <p>Manage your account details and preferences</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+
+        <!-- Account Info Card -->
+        <div class="section-card mb-3">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div style="width:56px;height:56px;border-radius:50%;background:var(--blood-red);
+                        display:flex;align-items:center;justify-content:center;
+                        font-size:1.5rem;color:#fff;font-weight:700;flex-shrink:0;">
+              {{ session.get('full_name','?')[0].upper() }}
+            </div>
+            <div>
+              <div class="fw-bold" style="font-size:1rem;">{{ profile.get('full_name','') }}</div>
+              <div style="font-size:.85rem;color:var(--text-muted);">@{{ profile.get('username','') }}</div>
+              {% if donor_row %}
+              <span style="font-size:.75rem;background:rgba(192,57,43,0.1);color:var(--blood-red);
+                           padding:2px 8px;border-radius:20px;font-weight:600;">
+                {{ donor_row.blood_group }} Donor
+              </span>
+              {% endif %}
+            </div>
+          </div>
+          <div style="font-size:.84rem;color:var(--text-muted);">
+            <i class="bi bi-telephone me-1"></i>
+            {{ profile.get('phone','No phone added') }}
+          </div>
+        </div>
+
+        <!-- Settings Menu -->
+        {% set items = [
+          ('settings_name',     'bi-person-fill',        'Full Name',      'Change your display name'),
+          ('settings_username', 'bi-at',                 'Username',       'Change your @username'),
+          ('settings_email',    'bi-envelope-fill',      'Email Address',  'Change email with OTP verification'),
+          ('settings_phone',    'bi-telephone-fill',     'Phone Number',   'Add or change phone with OTP'),
+          ('settings_password', 'bi-lock-fill',          'Password',       'Change password with email verification'),
+        ] %}
+
+        <div class="section-card mb-3">
+          {% for endpoint, icon, label, desc in items %}
+          <a href="{{ url_for(endpoint) }}"
+             class="d-flex align-items-center gap-3 py-3 px-1 text-decoration-none
+                    {% if not loop.last %}border-bottom{% endif %}"
+             style="color:var(--text-dark);transition:background .15s;border-color:var(--border)!important;">
+            <div style="width:38px;height:38px;border-radius:10px;
+                        background:rgba(192,57,43,0.08);display:flex;
+                        align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="bi {{ icon }}" style="color:var(--blood-red);font-size:1rem;"></i>
+            </div>
+            <div class="flex-grow-1">
+              <div class="fw-600" style="font-size:.92rem;">{{ label }}</div>
+              <div style="font-size:.78rem;color:var(--text-muted);">{{ desc }}</div>
+            </div>
+            <i class="bi bi-chevron-right" style="color:var(--text-muted);"></i>
+          </a>
+          {% endfor %}
+        </div>
+
+        <!-- Donor Availability -->
+        {% if donor_row %}
+        <div class="section-card mb-3">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <div class="fw-600" style="font-size:.92rem;">Donation Availability</div>
+              <div style="font-size:.78rem;color:var(--text-muted);">
+                Toggle whether you can donate blood right now
+              </div>
+            </div>
+            <form method="POST" action="{{ url_for('settings_availability') }}">
+              <button type="submit" class="btn btn-sm
+                {% if donor_row.is_available %}btn-success{% else %}btn-secondary{% endif %}">
+                {% if donor_row.is_available %}
+                  <i class="bi bi-toggle-on me-1"></i>Available
+                {% else %}
+                  <i class="bi bi-toggle-off me-1"></i>Unavailable
+                {% endif %}
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Logout -->
+        <div class="section-card">
+          <a href="{{ url_for('logout') }}"
+             class="d-flex align-items-center gap-3 text-decoration-none"
+             style="color:#C0392B;">
+            <div style="width:38px;height:38px;border-radius:10px;
+                        background:rgba(192,57,43,0.08);display:flex;
+                        align-items:center;justify-content:center;">
+              <i class="bi bi-box-arrow-right" style="color:var(--blood-red);font-size:1rem;"></i>
+            </div>
+            <div class="fw-600" style="font-size:.92rem;">Log Out</div>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
