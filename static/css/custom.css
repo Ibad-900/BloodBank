@@ -1,0 +1,638 @@
+/* ============================================================
+   custom.css — Blood Donor Registry Peshawar
+   Theme: Deep crimson + dark navy + clean white cards
+   Fonts: Bebas Neue (display) + DM Sans (body)
+   ============================================================ */
+
+/* ---------- CSS Variables ---------- */
+:root {
+    --blood-red:    #C0392B;
+    --blood-dark:   #7B1818;
+    --blood-light:  #E74C3C;
+    --navy-dark:    #0F172A;
+    --navy-mid:     #1E293B;
+    --text-dark:    #1E293B;
+    --text-muted:   #64748B;
+    --card-bg:      #FFFFFF;
+    --light-bg:     #F8FAFC;
+    --border:       #E2E8F0;
+    --success:      #16A34A;
+    --warning-col:  #D97706;
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-dark);
+    background: var(--light-bg);
+    min-height: 100vh;
+}
+
+a { text-decoration: none; }
+
+/* ---------- Navbar ---------- */
+.navbar-blood {
+    background: var(--navy-dark);
+    border-bottom: 3px solid var(--blood-red);
+    padding: 0.6rem 0;
+}
+
+.navbar-blood .brand-text {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.55rem;
+    letter-spacing: 3px;
+    color: #FFFFFF;
+}
+
+.navbar-blood .nav-link {
+    color: rgba(255,255,255,0.75) !important;
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.navbar-blood .nav-link:hover,
+.navbar-blood .nav-link.active {
+    color: #FFFFFF !important;
+    background: rgba(192,57,43,0.25);
+}
+
+.navbar-blood .nav-link.nav-admin {
+    border: 1px solid rgba(192,57,43,0.5);
+    color: #fca5a5 !important;
+}
+
+.navbar-blood .nav-link.nav-admin:hover {
+    background: var(--blood-red);
+    color: white !important;
+    border-color: var(--blood-red);
+}
+
+/* ---------- Hero ---------- */
+.hero-section {
+    background: linear-gradient(140deg, var(--navy-dark) 0%, #1c0303 55%, #2d0808 100%);
+    color: white;
+    padding: 5rem 0 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(192,57,43,0.18) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.hero-eyebrow {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 0.8rem;
+    letter-spacing: 5px;
+    color: var(--blood-light);
+    margin-bottom: 0.6rem;
+    display: block;
+}
+
+.hero-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(3.2rem, 8vw, 6rem);
+    line-height: 1;
+    letter-spacing: 3px;
+    color: #FFFFFF;
+    margin-bottom: 1.25rem;
+}
+
+.hero-subtitle {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.68);
+    max-width: 480px;
+    margin-bottom: 2.2rem;
+}
+
+.hero-pulse {
+    font-size: 9rem;
+    display: block;
+    filter: drop-shadow(0 0 48px rgba(192,57,43,0.6));
+    animation: heartbeat 1.8s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    14%     { transform: scale(1.13); }
+    28%     { transform: scale(1); }
+    42%     { transform: scale(1.07); }
+    70%     { transform: scale(1); }
+}
+
+/* ---------- Buttons ---------- */
+.btn-red {
+    background: var(--blood-red);
+    color: white;
+    border: 2px solid var(--blood-red);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    transition: all 0.22s;
+    border-radius: 8px;
+}
+
+.btn-red:hover {
+    background: var(--blood-dark);
+    border-color: var(--blood-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(192,57,43,0.35);
+}
+
+.btn-outline-white {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.45);
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.22s;
+}
+
+.btn-outline-white:hover {
+    border-color: white;
+    background: rgba(255,255,255,0.08);
+    color: white;
+}
+
+/* ---------- Stats Bar ---------- */
+.stats-bar {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.stat-item { padding: 1.25rem 0.5rem; }
+
+.stat-number {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.6rem;
+    line-height: 1;
+    color: var(--blood-red);
+    display: block;
+}
+
+.stat-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ---------- Section Titles ---------- */
+.section-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    letter-spacing: 2.5px;
+    color: var(--text-dark);
+    margin-bottom: 0.3rem;
+}
+
+.section-subtitle {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    margin-bottom: 1.75rem;
+}
+
+/* ---------- Blood Group Cards (Home) ---------- */
+.bg-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; }
+@media (max-width: 768px)  { .bg-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 400px)  { .bg-grid { grid-template-columns: repeat(2,1fr); } }
+
+.bg-card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    overflow: hidden;
+}
+
+.bg-card:hover {
+    border-color: var(--blood-red);
+    transform: translateY(-5px);
+    box-shadow: 0 16px 36px rgba(192,57,43,0.15);
+}
+
+.bg-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--blood-red);
+    transform: scaleX(0);
+    transition: transform 0.25s ease;
+}
+
+.bg-card:hover::after { transform: scaleX(1); }
+
+.bg-circle {
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    background: var(--blood-red);
+    color: white;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 0.9rem;
+    box-shadow: 0 6px 18px rgba(192,57,43,0.35);
+}
+
+.bg-count {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.4rem;
+    color: var(--text-dark);
+    line-height: 1;
+    display: block;
+}
+
+.bg-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ---------- Urgency Badges ---------- */
+.urgency {
+    display: inline-block;
+    padding: 3px 11px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+
+.urgency-Critical  { background: #FEE2E2; color: #991B1B; }
+.urgency-High      { background: #FEF3C7; color: #92400E; }
+.urgency-Normal    { background: #DCFCE7; color: #166534; }
+
+/* ---------- Blood Group Badge (table) ---------- */
+.bg-badge {
+    display: inline-block;
+    background: var(--blood-red);
+    color: white;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 3px 11px;
+    border-radius: 6px;
+    min-width: 42px;
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+
+/* ---------- Tables ---------- */
+.data-table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    margin-bottom: 0;
+}
+
+.data-table thead th {
+    background: var(--navy-mid);
+    color: rgba(255,255,255,0.85);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 0.9rem 1.1rem;
+    border: none;
+    font-weight: 500;
+}
+
+.data-table tbody td {
+    padding: 0.85rem 1.1rem;
+    border-color: var(--border);
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+.data-table tbody tr:hover { background: #FFF8F8; }
+
+/* ---------- CTA Section ---------- */
+.cta-section {
+    background: linear-gradient(135deg, var(--blood-dark) 0%, var(--blood-red) 100%);
+    color: white;
+}
+
+.cta-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.8rem;
+    letter-spacing: 3px;
+}
+
+.cta-sub {
+    color: rgba(255,255,255,0.75);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* ---------- Page Header ---------- */
+.page-header {
+    background: linear-gradient(140deg, var(--navy-dark), #200505);
+    color: white;
+    padding: 2.5rem 0 2rem;
+}
+
+.page-header h1 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.8rem;
+    letter-spacing: 3px;
+    margin-bottom: 0.3rem;
+}
+
+.page-header p { color: rgba(255,255,255,0.65); font-size: 0.95rem; }
+
+/* ---------- Form Cards ---------- */
+.form-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 36px rgba(0,0,0,0.08);
+}
+
+@media (max-width: 576px) { .form-card { padding: 1.5rem; } }
+
+.form-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    margin-bottom: 0.4rem;
+}
+
+.form-control, .form-select {
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.92rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--blood-red);
+    box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
+    outline: none;
+}
+
+.form-text { font-size: 0.8rem; color: var(--text-muted); }
+
+/* ---------- Search Results ---------- */
+.result-count {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.result-count strong { color: var(--blood-red); }
+
+.empty-state {
+    text-align: center;
+    padding: 3.5rem 1rem;
+    color: var(--text-muted);
+}
+
+.empty-state .empty-icon { font-size: 3.5rem; margin-bottom: 0.75rem; display: block; }
+.empty-state h5 { font-weight: 600; color: var(--text-dark); margin-bottom: 0.3rem; }
+
+/* ---------- Donor Row Badge ---------- */
+.gender-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.gender-Male   { background: #DBEAFE; color: #1D4ED8; }
+.gender-Female { background: #FCE7F3; color: #9D174D; }
+.gender-Other  { background: #F3F4F6; color: #374151; }
+
+/* ---------- Admin Stats ---------- */
+.admin-stat {
+    background: white;
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    border-left: 5px solid var(--blood-red);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.admin-stat.green  { border-color: var(--success); }
+.admin-stat.yellow { border-color: var(--warning-col); }
+.admin-stat.blue   { border-color: #2563EB; }
+
+.admin-stat-num {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--blood-red);
+    display: block;
+}
+
+.admin-stat.green  .admin-stat-num { color: var(--success); }
+.admin-stat.yellow .admin-stat-num { color: var(--warning-col); }
+.admin-stat.blue   .admin-stat-num { color: #2563EB; }
+
+.admin-stat-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ---------- Section Card (Admin) ---------- */
+.section-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    margin-bottom: 1.5rem;
+}
+
+.section-card-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ---------- Mini Progress Bar (Admin BG breakdown) ---------- */
+.mini-bar-wrap {
+    background: #F1F5F9;
+    border-radius: 4px;
+    height: 8px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.mini-bar {
+    height: 100%;
+    background: var(--blood-red);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+/* ---------- Flash Messages ---------- */
+.alert { border-radius: 10px; font-size: 0.92rem; }
+
+/* ---------- Footer ---------- */
+.site-footer {
+    background: var(--navy-dark);
+    color: rgba(255,255,255,0.55);
+    border-top: 3px solid var(--blood-red);
+    padding: 1.75rem 0;
+    font-size: 0.85rem;
+}
+
+.site-footer strong { color: rgba(255,255,255,0.85); }
+
+/* ---------- Urgency label in header ---------- */
+.label-urgent {
+    background: var(--blood-red);
+    color: white;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    padding: 3px 10px;
+    border-radius: 5px;
+    vertical-align: middle;
+}
+
+/* ---------- Responsive tweaks ---------- */
+@media (max-width: 576px) {
+    .hero-title   { font-size: 3rem; }
+    .cta-title    { font-size: 2rem; }
+    .stat-number  { font-size: 2rem; }
+}
+
+/* ============================================================
+   AUTH PAGES — additions to existing custom.css
+   ============================================================ */
+
+.auth-wrapper {
+    min-height: calc(100vh - 130px);
+    display: flex;
+    align-items: center;
+    padding: 2.5rem 0;
+    background: var(--light-bg);
+}
+
+.auth-icon-wrap {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.auth-heading {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: var(--text-dark);
+    text-align: center;
+    margin-bottom: 0.2rem;
+}
+
+.auth-sub {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    margin-bottom: 1.5rem;
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1rem 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border);
+}
+.auth-divider span { padding: 0 0.75rem; }
+
+.auth-info-box {
+    background: #FFF8F0;
+    border: 1px solid #FED7AA;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    color: #9A3412;
+}
+
+/* Google sign-in button */
+.btn-google {
+    background: #fff;
+    color: #3c4043;
+    border: 1.5px solid var(--border);
+    font-weight: 600;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0.6rem 1rem;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+.btn-google:hover {
+    background: #f8f9fa;
+    border-color: #aaa;
+    color: #3c4043;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Password eye toggle */
+.btn-eye {
+    border-left: none !important;
+}
+.btn-eye:focus { box-shadow: none !important; }
+
+/* Section card (used in profile) */
+.section-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+.section-card-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 1.5px;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.fw-600 { font-weight: 600; }
