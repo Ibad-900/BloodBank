@@ -1,0 +1,6 @@
+admin_id,username,password_hash,full_name,created_on
+1,admin_ibad,$2b$12$hBQkLmnPqRsTuVwXyZaAbB,Ibad Ur Rahman,2025-01-10 09:00:00
+2,dr_asif_bb,$2b$12$cDeFgHiJkLmNoPqRsT1234,Dr. Asif Nawaz,2025-01-12 10:30:00
+3,nurse_hira,$2b$12$uVwXyZaAbBcCdDeEfFgGhH,Hira Bibi,2025-02-01 08:45:00
+4,lrh_admin,$2b$12$iIjJkKlLmMnNoOpPqQrRsS,Lady Reading Admin,2025-02-15 11:00:00
+5,hmc_staff,$2b$12$tTuUvVwWxXyYzZ012345ab,HMC Blood Bank,2025-03-01 09:15:00
